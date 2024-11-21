@@ -1,0 +1,4 @@
+dependency-injector
+Flask
+Flask-SQLAlchemy
+psycopg2-binary
