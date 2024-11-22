@@ -11,7 +11,7 @@
 
 </div>
 
-<!-- Modal -->
+<!-- Create Device Modal -->
 <div id="device-modal" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
@@ -25,6 +25,21 @@
       <input type="text" id="device-location" name="location" required><br>
       <button type="submit">Submit</button>
     </form>
+  </div>
+</div>
+
+<!-- View Device Details Modal -->
+<div id="device-details-modal" class="modal">
+  <div class="modal-content">
+    <span class="close-details">&times;</span>
+    <h2>Device</h2>
+    <h3>Details</h3>
+    <p><strong>ID:</strong> <span id="details-id"></span></p>
+    <p><strong>Name:</strong> <span id="details-name"></span></p>
+    <p><strong>Location:</strong> <span id="details-location"></span></p>
+    <h3>Sensor Data Summary</h3>
+    <p><strong>Latest temperature (C):</strong> <span id="details-temp-latest-value"></span></p>
+    <p><strong>Temperatur status:</strong> <span id="details-temp-latest-status"></span></p>
   </div>
 </div>
 

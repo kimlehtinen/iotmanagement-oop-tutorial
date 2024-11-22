@@ -51,3 +51,24 @@ def create_device():
     }
 
     return jsonify(response), 201
+
+
+@device_api.route('/device/<device_id>', methods=['GET'])
+def get_device_by_id(device_id: str):
+    data = device_utils.get_device(device_id)
+    if not data:
+        return jsonify({"message": "Not found"}), 404
+    
+    return jsonify(data), 200
+
+
+@device_api.route('/device/<device_id>', methods=['DELETE'])
+def delete_device(device_id: str):
+    with get_db_session() as db_session:
+        db_session.execute(
+            text('DELETE FROM devices WHERE id = :device_id'), 
+            {'device_id': device_id}
+        )
+        db_session.commit()
+
+    return jsonify({"message": "Device deleted"}), 200

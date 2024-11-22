@@ -1,3 +1,5 @@
+from datetime import datetime
+import json
 import uuid
 from flask import Blueprint, jsonify, request
 from sqlalchemy import text
@@ -17,17 +19,20 @@ def get_sensor_data():
     result = []
     with get_db_session() as db_session:
         rows = db_session.execute(
-            text('SELECT * FROM sensor_data')
+            text('SELECT id, device_id, value, type, timestamp FROM sensor_data ORDER BY timestamp ASC')
         ).fetchall()
 
         for row in rows:
+            tstamp: datetime = row[4]
             result.append({
-                'id': row['id'],
-                'device_id': row['device_id'],
-                'value': row['value']['value'],
-                'type': row['type'],
-                'timestamp': row['timestamp']
+                'id': row[0],
+                'device_id': row[1],
+                'value': row[2]['value'],
+                'type': row[3],
+                'timestamp': tstamp.isoformat()
             })
+
+            print("Type:", type(row[4]))
 
     return jsonify(result), 200
 
@@ -39,18 +44,28 @@ def post_sensor_data():
     with get_db_session() as db_session:
         sensor_data_id = uuid.uuid4()
         db_session.execute(
-            text('INSERT INTO sensor_data (id, device_id, value, type) VALUES (:device_id, :value)'),
+            text('INSERT INTO sensor_data (id, device_id, value, type) VALUES (:id, :device_id, :value, :type)'),
             {
                 'id': sensor_data_id,
                 'device_id': sensor_data['device_id'],
-                'value': {'value': sensor_data['value']},
+                'value': json.dumps({'value': sensor_data['value']}),
                 'type': sensor_data['type']
             }
         )
 
-        data = db_session.execute(
-            text('SELECT * FROM sensor_data WHERE id = :id'),
+        db_session.commit()
+
+        row = db_session.execute(
+            text('SELECT id, device_id, value, type, timestamp FROM sensor_data WHERE id = :id'),
             {'id': sensor_data_id}
         ).fetchone()
+
+        data = {
+            'id': row[0],
+            'device_id': row[1],
+            'value': row[2]['value'],
+            'type': row[3],
+            'timestamp': row[4].isoformat()
+        }
 
     return jsonify(data), 201
