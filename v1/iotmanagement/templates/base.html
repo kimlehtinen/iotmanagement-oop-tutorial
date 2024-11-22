@@ -1,0 +1,18 @@
+<!doctype html>
+<head>
+    <title>IoT Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> 
+</head>
+<body>
+<nav>
+  <h1>IoT Management</h1>
+</nav>
+<section class="content">
+    <header>
+        {% block header %}{% endblock %}
+      </header>
+  {% block content %}{% endblock %}
+</section>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>

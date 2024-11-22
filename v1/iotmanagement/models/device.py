@@ -1,3 +1,5 @@
+
+
 class Device:
     id: str
     name: str
@@ -7,7 +9,7 @@ class Device:
         self,
         id: str,
         name: str,
-        location: str,
+        location: str
     ):
         self.id = id
         self.name = name

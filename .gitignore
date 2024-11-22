@@ -1,2 +1,4 @@
 db/
 iotvenv/
+__pycache__/
+*.pyc

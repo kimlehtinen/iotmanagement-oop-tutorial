@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h2>{% block title %}Devices{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+<button id="add-device-button">Add Device</button>
+
+<div id="device-list">
+
+</div>
+
+<!-- Modal -->
+<div id="device-modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Add Device</h2>
+    <form id="device-form">
+      <label for="device-id">ID:</label>
+      <input type="text" id="device-id" name="id" required><br>
+      <label for="device-name">Name:</label>
+      <input type="text" id="device-name" name="name" required><br>
+      <label for="device-location">Location:</label>
+      <input type="text" id="device-location" name="location" required><br>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
