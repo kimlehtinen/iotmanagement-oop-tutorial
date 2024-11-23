@@ -1,66 +1,63 @@
 
-from flask import Blueprint
+from flask import Blueprint, jsonify, request
+from dependency_injector.wiring import inject, Provide
 
+from src.core.device.device import Device
+from src.core.device.device_service import DeviceService
+from src.core.device.device_summary import DeviceSummary
+from src.config.di_container import DIContainer
 
 device_api = Blueprint('device_api', __name__)
 
 
 @device_api.route('/device', methods=['GET'])
-def get_device():
-    with get_db_session() as db_session:
-        rows = db_session.execute(text('SELECT id, name, location FROM devices')).fetchall()
-        devices = []
-        for row in rows:
-            print(row)
-            devices.append({
-                'id': row[0],
-                'name': row[1],
-                'location': row[2],
-            })
+@inject
+def get_device(
+    device_service: DeviceService = Provide[DIContainer.device_service]
+):
+    devices: list[Device] = device_service.get_all()
+    devices_dict: list[dict] = list(map(lambda x: x.to_dict(), devices))
 
-        return {'devices': devices}
+    return jsonify(devices_dict), 200
 
 
 @device_api.route('/device', methods=['POST'])
-def create_device():
-    """
-    Parannus:
-    + Rajapinta ja tietokantaoperaatiot eroteltu
-    + Liiketoimintalogiikka eroteltu 
-    """
+def create_device(
+    device_service: DeviceService = Provide[DIContainer.device_service]
+):
     data = request.json
-    
-    try:
-        device: Device = device_utils.create_device(data)
-    except ValueError as e:
-        return {"message": str(e)}, 400
 
-    response = {
-        'id': device.id,
-        'name': device.name,
-        'location': device.location,
-    }
+    device = Device(
+        id=data['id'],
+        name=data['name'],
+        location=data['location']
+    )
 
-    return jsonify(response), 201
+    device = device_service.create_device(device)
+
+    return jsonify(device.to_dict()), 201
 
 
 @device_api.route('/device/<device_id>', methods=['GET'])
-def get_device_by_id(device_id: str):
-    data = device_utils.get_device(device_id)
-    if not data:
+def get_device_by_id(
+    device_id: str,
+    device_service: DeviceService = Provide[DIContainer.device_service]
+):
+    device_summary: DeviceSummary = device_service.get_device_summary(device_id)
+    if not device_summary:
         return jsonify({"message": "Not found"}), 404
     
-    return jsonify(data), 200
+    return jsonify(device_summary.to_dict()), 200
 
 
 @device_api.route('/device/<device_id>', methods=['DELETE'])
-def delete_device(device_id: str):
-    with get_db_session() as db_session:
-        db_session.execute(
-            text('DELETE FROM devices WHERE id = :device_id'), 
-            {'device_id': device_id}
-        )
-        db_session.commit()
+def delete_device(
+    device_id: str,
+    device_service: DeviceService = Provide[DIContainer.device_service]
+):
+    is_deleted: bool = device_service.delete_device(device_id)
+    if not is_deleted:
+        return jsonify({"message": "Unexpected error when deleting"}), 500
 
     return jsonify({"message": "Device deleted"}), 200
 

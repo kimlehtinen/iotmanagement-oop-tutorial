@@ -12,3 +12,10 @@ class Device:
         self.id = id
         self.name = name
         self.location = location
+
+    def to_dict(self) -> dict:
+        return {
+            'id': self.id,
+            'name': self.name,
+            'location': self.location,
+        }

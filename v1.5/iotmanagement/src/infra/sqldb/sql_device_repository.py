@@ -6,6 +6,8 @@ from iotmanagement.src.core.device.device import Device
 
 
 class SQLDeviceRepository(DeviceRepository):
+    db_session: Session
+
     def __init__(self, db_session: Session):
         self.db_session = db_session
 

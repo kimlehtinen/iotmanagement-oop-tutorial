@@ -26,3 +26,14 @@ class DeviceSummary:
     ) -> None:
         self.device = device
         self.sensor_data_summary = sensor_data_summary
+
+    def to_dict(self) -> dict:
+        return {
+            'device': self.device.to_dict(),
+            'sensor_data_summary': {
+                'temperature': {
+                    'latest_status': self.sensor_data_summary.latest_temp_status.value,
+                    'latest_value': self.sensor_data_summary.latest_temp_value,
+                },
+            }
+        }

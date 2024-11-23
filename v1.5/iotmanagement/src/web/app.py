@@ -1,8 +1,16 @@
 from flask import Flask
 
+from src.config.di_container import DIContainer
+
 def create_app():
     app = Flask(__name__)
-    from iotmanagement.src.web.api.device_api import device_api
+    from src.web.api.device_api import device_api
+
+    di_container = DIContainer()
+    di_container.wire(modules=[
+        device_api
+    ])
+
     app.register_blueprint(device_api)
 
     return app
