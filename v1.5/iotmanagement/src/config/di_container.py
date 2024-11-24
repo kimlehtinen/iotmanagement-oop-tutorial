@@ -7,6 +7,7 @@ from src.core.device.device_repository import DeviceRepository
 from src.core.device.device_service import DeviceService
 from src.core.device.device_summary_generator import DeviceSummaryGenerator
 from src.core.sensor.sensor_data_repository import SensorDataRepository
+from src.core.sensor.sensor_data_service import SensorDataService
 
 
 class DIContainer(containers.DeclarativeContainer):
@@ -15,6 +16,11 @@ class DIContainer(containers.DeclarativeContainer):
     sensor_data_repository: SensorDataRepository = providers.Factory(
         SQLSensorDataRepository,
         db_session=db_session
+    )
+
+    sensor_data_service = providers.Factory(
+        SensorDataService,
+        sensor_data_repository=sensor_data_repository
     )
 
     device_repository: DeviceRepository = providers.Factory(

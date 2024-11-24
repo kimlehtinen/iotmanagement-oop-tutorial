@@ -16,17 +16,21 @@ class DeviceService:
         self.device_repository = device_repository
         self.device_summary_generator = device_summary_generator
 
-    def get_all(self) -> list[Device]:
+    def get_all_devices(self) -> list[Device]:
         return self.device_repository.get_all()
     
     def get_device_summary(self, device_id: str) -> DeviceSummary | None:
-        device = self.device_repository.get_by_id(device_id)
+        device: Device = self.device_repository.get_by_id(device_id)
         if device is None:
             return None
 
         return self.device_summary_generator.generate(device)
 
     def create_device(self, device: Device) -> Device:
+        existing_device = self.device_repository.get_by_id(device.id)
+        if existing_device:
+            raise ValueError(f"Device with id={device.id} already exists")
+
         return self.device_repository.create(device)   
 
     def delete_device(self, device_id: str) -> bool:

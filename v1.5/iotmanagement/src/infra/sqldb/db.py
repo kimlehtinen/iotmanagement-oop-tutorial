@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from flask_sqlalchemy import SQLAlchemy
 
 
-DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/iotmanagement'
+DATABASE_URL = 'postgresql://root:secret@127.0.0.1:5434/iotmanagement'
 
 engine = create_engine(DATABASE_URL)
 

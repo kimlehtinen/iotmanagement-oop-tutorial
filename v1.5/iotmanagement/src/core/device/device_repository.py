@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from iotmanagement.src.core.device.device import Device
+from src.core.device.device import Device
 
 
 class DeviceRepository(ABC):

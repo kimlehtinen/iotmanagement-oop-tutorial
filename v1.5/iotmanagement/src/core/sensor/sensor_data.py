@@ -27,3 +27,12 @@ class SensorData:
         self.type = type
         self.value = value
         self.timestamp = timestamp
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'device_id': self.device_id,
+            'type': self.type,
+            'value': self.value,
+            'timestamp': self.timestamp.isoformat()
+        }

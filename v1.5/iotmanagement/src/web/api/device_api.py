@@ -15,13 +15,14 @@ device_api = Blueprint('device_api', __name__)
 def get_device(
     device_service: DeviceService = Provide[DIContainer.device_service]
 ):
-    devices: list[Device] = device_service.get_all()
+    devices: list[Device] = device_service.get_all_devices()
     devices_dict: list[dict] = list(map(lambda x: x.to_dict(), devices))
 
-    return jsonify(devices_dict), 200
+    return jsonify({"devices": devices_dict}), 200
 
 
 @device_api.route('/device', methods=['POST'])
+@inject
 def create_device(
     device_service: DeviceService = Provide[DIContainer.device_service]
 ):
@@ -33,12 +34,16 @@ def create_device(
         location=data['location']
     )
 
-    device = device_service.create_device(device)
+    try:
+        device = device_service.create_device(device)
+    except ValueError as e:
+        return {"message": str(e)}, 400
 
     return jsonify(device.to_dict()), 201
 
 
 @device_api.route('/device/<device_id>', methods=['GET'])
+@inject
 def get_device_by_id(
     device_id: str,
     device_service: DeviceService = Provide[DIContainer.device_service]
@@ -51,6 +56,7 @@ def get_device_by_id(
 
 
 @device_api.route('/device/<device_id>', methods=['DELETE'])
+@inject
 def delete_device(
     device_id: str,
     device_service: DeviceService = Provide[DIContainer.device_service]

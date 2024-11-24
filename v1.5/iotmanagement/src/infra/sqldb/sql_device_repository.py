@@ -1,8 +1,8 @@
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from iotmanagement.src.core.device.device_repository import DeviceRepository
-from iotmanagement.src.core.device.device import Device
+from src.core.device.device_repository import DeviceRepository
+from src.core.device.device import Device
 
 
 class SQLDeviceRepository(DeviceRepository):
@@ -12,13 +12,13 @@ class SQLDeviceRepository(DeviceRepository):
         self.db_session = db_session
 
     def get_all(self) -> list[Device]:
-        rows = self.db_session.execute(text('SELECT * FROM devices')).fetchall()
+        rows = self.db_session.execute(text('SELECT id, name, location FROM devices')).fetchall()
         devices = []
         for row in rows:
             device = Device(
-                id=row['id'],
-                name=row['name'],
-                location=row['location']
+                id=row[0],
+                name=row[1],
+                location=row[2]
             )
             devices.append(device)
 
@@ -26,7 +26,7 @@ class SQLDeviceRepository(DeviceRepository):
 
     def get_by_id(self, device_id) -> Device:
         row = self.db_session.execute(
-            text('SELECT * FROM devices WHERE id = :id'),
+            text('SELECT id, name, location FROM devices WHERE id = :id'),
             {'id': device_id}
         ).fetchone()
 
@@ -34,9 +34,9 @@ class SQLDeviceRepository(DeviceRepository):
             return None
 
         return Device(
-            id=row['id'],
-            name=row['name'],
-            location=row['location']
+            id=row[0],
+            name=row[1],
+            location=row[2]
         )
 
     def create(self, device) -> Device:
@@ -44,6 +44,8 @@ class SQLDeviceRepository(DeviceRepository):
             text('INSERT INTO devices (id, name, location) VALUES (:id, :name, :location)'),
             {'id': device.id, 'name': device.name, 'location': device.location}
         )
+
+        self.db_session.commit()
 
         return self._get_by_id_or_fail(device.id)
 
