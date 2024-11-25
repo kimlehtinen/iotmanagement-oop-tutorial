@@ -1,4 +1,4 @@
-# IoT Management
+# IoT Management - OOP Tutorial
 
 ## Introduction
 Showing why clean code and architecture is important, and how OOP can be used to achieve that.
@@ -14,15 +14,26 @@ Versions:
     - Increased readability, testability and maintenance.
 - [v2](/v2)
     - Based on v1.5
-    - Architecture change: sensor data is moved its own service/application.
+    - Architecture change: sensor data is moved into its own REST API service/application, instead of saving this data in same database as our main application's database.
     - Nothing changed from our main application's perspective.
     - Same interfaces, just new implementations.
+    - Appropriate abstractions make it easy to migrate from [V1 Architecture](#v1-architecture) to [V2 Architecture](#v2-architecture).
+    - This final version changes implementation from `SQLSensorDataRepository` to `SensorAPIClient` implementation of `SensorDataRepository`.
+
+
+## Architecture
+## V1 Architecture
+![V1 Architecture](./v1architecture.png)
+
+## V2 Architecture
+![V1 Architecture](./v2architecture.png)
 
 ## Local environment setup
 
 ### Clone project
 ```
-git clone
+git clone https://github.com/kimlehtinen/iotmanagement-oop-tutorial.git
+cd iotmanagement-oop-tutorial/
 ```
 
 ### Create virtual env
