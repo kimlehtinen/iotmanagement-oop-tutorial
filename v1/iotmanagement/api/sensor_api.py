@@ -40,7 +40,6 @@ def get_sensor_data():
 @sensor_api.route('/sensor-data', methods=['POST'])
 def post_sensor_data():
     sensor_data = request.json
-
     with get_db_session() as db_session:
         sensor_data_id = uuid.uuid4()
         db_session.execute(
@@ -52,9 +51,7 @@ def post_sensor_data():
                 'type': sensor_data['type']
             }
         )
-
         db_session.commit()
-
         row = db_session.execute(
             text('SELECT id, device_id, value, type, timestamp FROM sensor_data WHERE id = :id'),
             {'id': sensor_data_id}

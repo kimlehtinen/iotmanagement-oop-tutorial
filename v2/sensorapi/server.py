@@ -46,4 +46,4 @@ def post_sensor_data():
     return jsonify(sensor_data), 201
 
 if __name__ == '__main__':
-    app.run(port=5050, debug=True)
+    app.run(port=5070, debug=True)

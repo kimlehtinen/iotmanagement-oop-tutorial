@@ -4,4 +4,4 @@ Flask-SQLAlchemy
 psycopg2-binary
 pytest
 pytest-cov
-
+requests

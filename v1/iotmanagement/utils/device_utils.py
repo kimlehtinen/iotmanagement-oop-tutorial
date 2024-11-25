@@ -50,15 +50,10 @@ def get_device(device_id: str):
             text('SELECT id, name, location FROM devices WHERE id = :id'),
             {'id': device_id},
         ).fetchone()
-        
         if not device_row:
             return None
 
-        device = {
-            'id': device_row[0],
-            'name': device_row[1],
-            'location': device_row[2],
-        }
+        device = {'id': device_row[0], 'name': device_row[1], 'location': device_row[2] }
 
         sensor_data_rows = db_session.execute(
             text('SELECT id, device_id, type, value, timestamp FROM sensor_data WHERE device_id = :device_id ORDER BY timestamp ASC'),
@@ -77,7 +72,6 @@ def get_device(device_id: str):
     temperature_data = list(filter(lambda x: x['type'] == 'TEMPERATURE', sensor_data))
     latest_temperature_status = TemperatureStatus.UNKNOWN
     latest_temperature_val = None
-
     if len(temperature_data) > 0:
         latest_temperature_val = temperature_data[-1]['value']
         if latest_temperature_val > 100:
